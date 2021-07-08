@@ -1,6 +1,6 @@
+import produce from 'immer'
 import create from 'zustand'
 import { persist } from 'zustand/middleware'
-import produce from 'immer'
 // import { nanoid } from 'nanoid'
 
 export type HabitState = {
@@ -40,7 +40,13 @@ export const useStore = create<State>(
       logHabit: (habit, date) =>
         set(
           produce((state) => {
-            state.log[date] = [...(state.log[date] || []), habit.id]
+            state.log[date] = state.log[date] || []
+            const index = state.log[date].indexOf(habit.id)
+            if (index === -1) {
+              state.log[date].push(habit.id)
+            } else {
+              state.log[date].splice(index, 1)
+            }
           })
         ),
     }),

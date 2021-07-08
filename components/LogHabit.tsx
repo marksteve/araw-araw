@@ -8,9 +8,9 @@ const Habits = tw.div`flex gap-x-2`
 
 const Habit = styled(Twemoji, tw`p-2 rounded shadow bg-white`)
 
-const NewHabit = styled(Habit, {
+const NewHabit = styled.div({
   ...tw`hidden`,
-  [`${Container}:hover &`]: tw`block`,
+  [`${Container}:hover &`]: tw`flex`,
 })
 
 type LogHabitProps = {
@@ -35,7 +35,11 @@ export default function LogHabit({ date }: LogHabitProps) {
         {loggedHabits.map((habit) => (
           <Habit svg text={habit?.emoji || ''} key={habit?.id} />
         ))}
-        <NewHabit svg text={selectedHabit?.emoji || ''} />
+        {!loggedHabits.includes(selectedHabit!) && (
+          <NewHabit>
+            <Habit svg text={selectedHabit?.emoji || ''} />
+          </NewHabit>
+        )}
       </Habits>
     </Container>
   )
