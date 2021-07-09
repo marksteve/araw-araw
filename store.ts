@@ -1,7 +1,7 @@
+import { startOfMonth } from 'date-fns'
 import produce from 'immer'
 import create from 'zustand'
 import { persist } from 'zustand/middleware'
-// import { nanoid } from 'nanoid'
 
 export type HabitState = {
   id: string
@@ -12,6 +12,9 @@ export type HabitState = {
 export type LogState = Record<string, HabitState['id'][]>
 
 type State = {
+  selectedMonth: Date
+  getSelectedMonth: () => Date
+  selectMonth: (month: Date) => void
   habits: HabitState[]
   selectedHabit: HabitState | null
   selectHabit: (habit: HabitState) => void
@@ -22,6 +25,7 @@ type State = {
 export const useStore = create<State>(
   persist(
     (set, get) => ({
+      selectedMonth: startOfMonth(new Date()),
       habits: [
         // {
         //   id: nanoid(),
@@ -34,6 +38,8 @@ export const useStore = create<State>(
         //   name: 'Mobility program',
         // },
       ],
+      getSelectedMonth: () => new Date(get().selectedMonth),
+      selectMonth: (month) => set({ selectedMonth: month }),
       selectedHabit: null,
       selectHabit: (habit) => set({ selectedHabit: habit }),
       log: {},

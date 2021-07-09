@@ -4,12 +4,12 @@ import { useStore } from '../store'
 
 const Container = tw.div`absolute inset-0 flex justify-center items-center cursor-pointer`
 
-const Habits = tw.div`flex gap-x-2`
+const Habits = tw.div`flex flex-wrap justify-center gap-2 w-3/4`
 
 const Habit = styled(Twemoji, tw`p-2 rounded shadow bg-white`)
 
 const NewHabit = styled.div({
-  ...tw`hidden`,
+  ...tw`hidden opacity-50`,
   [`${Container}:hover &`]: tw`flex`,
 })
 
@@ -35,7 +35,7 @@ export default function LogHabit({ date }: LogHabitProps) {
         {loggedHabits.map((habit) => (
           <Habit svg text={habit?.emoji || ''} key={habit?.id} />
         ))}
-        {!loggedHabits.includes(selectedHabit!) && (
+        {!loggedHabits.map(h => h?.id).includes(selectedHabit?.id) && (
           <NewHabit>
             <Habit svg text={selectedHabit?.emoji || ''} />
           </NewHabit>

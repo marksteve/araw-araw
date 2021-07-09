@@ -15,7 +15,7 @@ const Container = styled.div({
   `,
   variants: {
     selected: {
-      true: tw`shadow`,
+      true: tw`bg-yellow-100`,
     },
   },
 })
