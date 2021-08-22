@@ -1,6 +1,7 @@
+import download from 'downloadjs'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import { ChangeEvent } from 'react'
+import { ChangeEvent, MouseEvent } from 'react'
 import tw from 'twin.macro'
 import useAuth from '../auth'
 import Habit from '../components/Habit'
@@ -9,19 +10,24 @@ import useStore from '../store'
 
 const Container = tw.main`flex h-screen`
 
-const Sidebar = tw.div`p-4 border-r flex flex-col gap-4`
+const Sidebar = tw.div`p-4 border-r flex flex-col items-start gap-4`
 
 const SidebarTitle = tw.h2`text-lg font-bold`
 
-const Calendar = dynamic(() => import('../components/Calendar'), { ssr: false })
+const Habits = tw.div`flex-grow`
 
-const ImportLabel = tw.label`text-sm`
+const ImportLabel = tw.label`text-sm cursor-pointer hover:underline`
 
 const Import = tw.input`hidden`
+
+const Export = tw.button`text-sm hover:underline`
+
+const Calendar = dynamic(() => import('../components/Calendar'), { ssr: false })
 
 export default function Home() {
   const uid = useAuth((state) => state.uid)
   const store = useStore(uid)
+  const state = store((state) => state)
 
   const habits = store((state) => state.habits)
   const importState = store((state) => state.importState)
@@ -38,6 +44,14 @@ export default function Home() {
     reader.readAsText(file)
   }
 
+  function handleExport(e: MouseEvent<HTMLButtonElement>) {
+    download(
+      JSON.stringify(state),
+      `araw-araw-${Date.now()}.json`,
+      'application/json'
+    )
+  }
+
   return (
     <>
       <Head>
@@ -48,10 +62,12 @@ export default function Home() {
       <Container>
         <Sidebar>
           <Title svg text="Araw-Araw&nbsp;:sun::sun:" />
-          <SidebarTitle>Habits</SidebarTitle>
-          {habits.map((habit) => (
-            <Habit key={habit.id} habit={habit} />
-          ))}
+          <Habits>
+            <SidebarTitle>Habits</SidebarTitle>
+            {habits.map((habit) => (
+              <Habit key={habit.id} habit={habit} />
+            ))}
+          </Habits>
           <ImportLabel>
             Import from file&hellip;
             <Import
@@ -60,6 +76,7 @@ export default function Home() {
               onChange={handleImport}
             />
           </ImportLabel>
+          <Export onClick={handleExport}>Export to file&hellip;</Export>
         </Sidebar>
         <Calendar />
       </Container>
