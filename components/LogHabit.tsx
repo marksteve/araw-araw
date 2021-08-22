@@ -1,6 +1,7 @@
 import { Twemoji } from 'react-emoji-render'
 import tw, { styled } from 'twin.macro'
-import { useStore } from '../store'
+import useAuth from '../auth'
+import useStore from '../store'
 
 const Container = tw.div`absolute inset-0 flex justify-center items-center cursor-pointer`
 
@@ -18,12 +19,15 @@ type LogHabitProps = {
 }
 
 export default function LogHabit({ date }: LogHabitProps) {
-  const selectedHabit = useStore((state) => state.selectedHabit)
-  const habits = useStore((state) => state.habits || [])
-  const loggedHabits = useStore((state) => state.log[date] || []).map(
-    (habitId) => habits.find((habit) => habit.id === habitId)
+  const uid = useAuth((state) => state.uid)
+  const store = useStore(uid)
+
+  const selectedHabit = store((state) => state.selectedHabit)
+  const habits = store((state) => state.habits || [])
+  const loggedHabits = store((state) => state.log[date] || []).map((habitId) =>
+    habits.find((habit) => habit.id === habitId)
   )
-  const logHabit = useStore((state) => state.logHabit)
+  const logHabit = store((state) => state.logHabit)
 
   function handleClick() {
     logHabit(selectedHabit!, date)
@@ -35,7 +39,7 @@ export default function LogHabit({ date }: LogHabitProps) {
         {loggedHabits.map((habit) => (
           <Habit svg text={habit?.emoji || ''} key={habit?.id} />
         ))}
-        {!loggedHabits.map(h => h?.id).includes(selectedHabit?.id) && (
+        {!loggedHabits.map((h) => h?.id).includes(selectedHabit?.id) && (
           <NewHabit>
             <Habit svg text={selectedHabit?.emoji || ''} />
           </NewHabit>

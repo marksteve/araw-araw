@@ -7,8 +7,9 @@ import {
   sub,
 } from 'date-fns'
 import tw, { styled } from 'twin.macro'
+import useAuth from '../auth'
 import LogHabit from '../components/LogHabit'
-import { useStore } from '../store'
+import useStore from '../store'
 
 const Container = tw.div`flex-grow flex flex-col`
 
@@ -43,17 +44,20 @@ const Day = styled.div({
 })
 
 export default function Calendar() {
-  const selectedMonth = useStore((state) => state.getSelectedMonth())
+  const uid = useAuth((state) => state.uid)
+  const store = useStore(uid)
+
+  const selectedMonth = store((state) => state.getSelectedMonth())
   const prevMonth = sub(selectedMonth, { months: 1 })
   const nextMonth = add(selectedMonth, { months: 1 })
-  const selectMonth = useStore((state) => state.selectMonth)
+  const selectMonth = store((state) => state.selectMonth)
   const days = eachDayOfInterval({
     start: selectedMonth,
     end: endOfMonth(selectedMonth),
   })
   const offset = getDay(selectedMonth)
-  const selectedHabit = useStore((state) => state.selectedHabit)
-  const log = useStore((state) => state.log)
+  const selectedHabit = store((state) => state.selectedHabit)
+  const log = store((state) => state.log)
 
   function handlePrevMonth() {
     selectMonth(prevMonth)

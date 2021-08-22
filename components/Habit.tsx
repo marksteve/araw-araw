@@ -1,6 +1,7 @@
 import { Twemoji } from 'react-emoji-render'
 import tw, { styled } from 'twin.macro'
-import { HabitState, useStore } from '../store'
+import useAuth from '../auth'
+import useStore, { HabitState } from '../store'
 
 const Container = styled.div({
   ...tw`
@@ -26,8 +27,11 @@ type HabitProps = {
 }
 
 export default function Habit({ habit }: HabitProps) {
-  const selectHabit = useStore((state) => state.selectHabit)
-  const selected = useStore((state) => habit.id === state.selectedHabit?.id)
+  const uid = useAuth((state) => state.uid)
+  const store = useStore(uid)
+
+  const selectHabit = store((state) => state.selectHabit)
+  const selected = store((state) => habit.id === state.selectedHabit?.id)
 
   function handleClick() {
     selectHabit(habit)
