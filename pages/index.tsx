@@ -1,17 +1,15 @@
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { ChangeEvent } from 'react'
-import { Twemoji } from 'react-emoji-render'
-import tw, { styled } from 'twin.macro'
+import tw from 'twin.macro'
 import useAuth from '../auth'
 import Habit from '../components/Habit'
+import Title from '../components/Title'
 import useStore from '../store'
 
 const Container = tw.main`flex h-screen`
 
 const Sidebar = tw.div`p-4 border-r flex flex-col gap-4`
-
-const Title = styled(Twemoji, tw`text-xl font-bold flex items-center mb-4`)
 
 const SidebarTitle = tw.h2`text-lg font-bold`
 
