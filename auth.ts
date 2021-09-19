@@ -3,6 +3,7 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
+  signOut,
 } from 'firebase/auth'
 import create from 'zustand'
 import firebaseApp from './firebase'
@@ -10,6 +11,7 @@ import firebaseApp from './firebase'
 type State = {
   uid: string
   signIn: () => void
+  signOut: () => Promise<void>
 }
 
 const useAuth = create<State>((set) => {
@@ -27,8 +29,9 @@ const useAuth = create<State>((set) => {
     uid: '',
     signIn: () => {
       const provider = new GoogleAuthProvider()
-      signInWithPopup(auth, provider)
+      return signInWithPopup(auth, provider)
     },
+    signOut: () => signOut(auth),
   }
 })
 

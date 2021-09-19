@@ -8,24 +8,9 @@ import Habit from '../components/Habit'
 import Title from '../components/Title'
 import useStore from '../store'
 
-const Container = tw.main`flex h-screen`
-
-const Sidebar = tw.div`p-4 border-r flex flex-col items-start gap-4`
-
-const SidebarTitle = tw.h2`text-lg font-bold`
-
-const Habits = tw.div`flex-grow`
-
-const ImportLabel = tw.label`text-sm cursor-pointer hover:underline`
-
-const Import = tw.input`hidden`
-
-const Export = tw.button`text-sm hover:underline`
-
-const Calendar = dynamic(() => import('../components/Calendar'), { ssr: false })
-
 export default function Home() {
   const uid = useAuth((state) => state.uid)
+  const signOut = useAuth((state) => state.signOut)
   const store = useStore(uid)
   const state = store((state) => state)
 
@@ -50,6 +35,10 @@ export default function Home() {
       `araw-araw-${Date.now()}.json`,
       'application/json'
     )
+  }
+
+  function handleSignOut(e: MouseEvent<HTMLButtonElement>) {
+    signOut()
   }
 
   return (
@@ -77,9 +66,28 @@ export default function Home() {
             />
           </ImportLabel>
           <Export onClick={handleExport}>Export to file&hellip;</Export>
+          <SignOut onClick={handleSignOut}>Sign out</SignOut>
         </Sidebar>
         <Calendar />
       </Container>
     </>
   )
 }
+
+const Container = tw.main`flex h-screen`
+
+const Sidebar = tw.div`p-4 border-r flex flex-col items-start gap-4`
+
+const SidebarTitle = tw.h2`text-lg font-bold`
+
+const Habits = tw.div`flex-grow`
+
+const ImportLabel = tw.label`text-sm cursor-pointer hover:underline`
+
+const Import = tw.input`hidden`
+
+const Export = tw.button`text-sm hover:underline`
+
+const SignOut = tw.button`text-sm hover:underline`
+
+const Calendar = dynamic(() => import('../components/Calendar'), { ssr: false })
