@@ -67,6 +67,7 @@ export default function Calendar() {
               }
             >
               {format(day, 'd')}
+              <DayOfWeek mobile>{format(day, 'EEE')}</DayOfWeek>
               <LogHabit date={date} />
             </Day>
           )
@@ -84,23 +85,37 @@ const MonthLink = tw.button``
 
 const SelectedMonth = tw.div`text-lg font-bold`
 
-const DayHeader = tw.div`flex p-4`
+const DayHeader = tw.div`
+  p-4 hidden
+  sm:flex
+`
 
-const DayOfWeek = tw.div`font-bold flex-1 p-2 text-sm text-center text-gray-500`
+const DayOfWeek = styled.span({
+  ...tw`font-bold flex-1 p-2 text-sm text-center text-gray-500`,
+  variants: {
+    mobile: {
+      true: tw`block p-0 text-xs text-left uppercase sm:hidden`,
+    },
+  },
+})
 
-const DayGrid = tw.div`flex-grow grid grid-cols-7 grid-rows-6 gap-4 p-4`
+const DayGrid = tw.div`
+  flex-grow grid gap-4 p-4
+  grid-cols-1
+  sm:grid-cols-7 sm:grid-rows-6 
+`
 
 const Day = styled.div({
   ...tw`bg-gray-100 rounded p-2 relative`,
   variants: {
     offset: {
-      0: tw`col-start-7`,
-      1: tw`col-start-1`,
-      2: tw`col-start-2`,
-      3: tw`col-start-3`,
-      4: tw`col-start-4`,
-      5: tw`col-start-5`,
-      6: tw`col-start-6`,
+      0: tw`sm:col-start-7`,
+      1: tw`sm:col-start-1`,
+      2: tw`sm:col-start-2`,
+      3: tw`sm:col-start-3`,
+      4: tw`sm:col-start-4`,
+      5: tw`sm:col-start-5`,
+      6: tw`sm:col-start-6`,
     },
     logged: {
       true: tw`bg-yellow-100`,
