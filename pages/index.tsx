@@ -1,8 +1,8 @@
 import download from 'downloadjs'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import { ChangeEvent, MouseEvent } from 'react'
-import tw from 'twin.macro'
+import { ChangeEvent, MouseEvent, useState } from 'react'
+import tw, { styled } from 'twin.macro'
 import useAuth from '../auth'
 import Habit from '../components/Habit'
 import Title from '../components/Title'
@@ -11,11 +11,14 @@ import useStore from '../store'
 export default function Home() {
   const uid = useAuth((state) => state.uid)
   const signOut = useAuth((state) => state.signOut)
+
   const store = useStore(uid)
   const state = store((state) => state)
 
   const habits = store((state) => state.habits)
   const importState = store((state) => state.importState)
+
+  const [sidebarToggled, setSidebarToggled] = useState(false)
 
   function handleImport(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files!.length != 1) {
@@ -41,6 +44,10 @@ export default function Home() {
     signOut()
   }
 
+  function toggleSidebar(e: MouseEvent<HTMLSpanElement>) {
+    setSidebarToggled(!sidebarToggled)
+  }
+
   return (
     <>
       <Head>
@@ -49,8 +56,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container>
-        <Sidebar>
-          <Title svg text="Araw-Araw&nbsp;:sun::sun:" />
+        <Title svg text="Araw-Araw&nbsp;:sun::sun:" onClick={toggleSidebar} />
+        <Sidebar toggled={sidebarToggled}>
           <Habits>
             <SidebarTitle>Habits</SidebarTitle>
             {habits.map((habit) => (
@@ -74,20 +81,43 @@ export default function Home() {
   )
 }
 
-const Container = tw.main`flex h-screen`
+const Calendar = dynamic(() => import('../components/Calendar'), { ssr: false })
 
-const Sidebar = tw.div`p-4 border-r flex flex-col items-start gap-4`
+const Sidebar = styled.div({
+  ...tw`
+  px-4 pb-4 pt-16 flex flex-col items-stretch gap-4
+  absolute inset-0 z-10 bg-white
+  sm:border-r sm:items-start sm:static
+`,
+  variants: {
+    toggled: {
+      true: tw`flex sm:flex`,
+      false: tw`hidden sm:flex`,
+    },
+  },
+})
 
-const SidebarTitle = tw.h2`text-lg font-bold`
+const Container = styled.main({
+  ...tw`
+    flex flex-col h-screen
+    sm:flex-row
+  `,
+  [`& ${Title}`]: tw`absolute top-4 left-4 z-20`,
+  [`& .calendar`]: tw`mt-16`,
+})
 
-const Habits = tw.div`flex-grow`
+const SidebarTitle = tw.h2`
+  text-lg font-bold
+`
+
+const Habits = tw.div`
+  col-span-2 flex-grow
+`
 
 const ImportLabel = tw.label`text-sm cursor-pointer hover:underline`
 
 const Import = tw.input`hidden`
 
-const Export = tw.button`text-sm hover:underline`
+const Export = tw.button`text-sm text-left hover:underline`
 
-const SignOut = tw.button`text-sm hover:underline`
-
-const Calendar = dynamic(() => import('../components/Calendar'), { ssr: false })
+const SignOut = tw.button`text-sm text-left hover:underline`

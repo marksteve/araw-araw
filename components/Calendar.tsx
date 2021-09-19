@@ -11,38 +11,6 @@ import useAuth from '../auth'
 import LogHabit from '../components/LogHabit'
 import useStore from '../store'
 
-const Container = tw.div`flex-grow flex flex-col`
-
-const MonthNav = tw.div`flex justify-between p-2 border-b`
-
-const MonthLink = tw.button``
-
-const SelectedMonth = tw.div`text-lg font-bold`
-
-const DayHeader = tw.div`flex p-4`
-
-const DayOfWeek = tw.div`font-bold flex-1 p-2 text-sm text-center text-gray-500`
-
-const DayGrid = tw.div`flex-grow grid grid-cols-7 grid-rows-6 gap-4 p-4`
-
-const Day = styled.div({
-  ...tw`bg-gray-100 rounded p-2 relative`,
-  variants: {
-    offset: {
-      0: tw`col-start-7`,
-      1: tw`col-start-1`,
-      2: tw`col-start-2`,
-      3: tw`col-start-3`,
-      4: tw`col-start-4`,
-      5: tw`col-start-5`,
-      6: tw`col-start-6`,
-    },
-    logged: {
-      true: tw`bg-yellow-100`,
-    },
-  },
-})
-
 export default function Calendar() {
   const uid = useAuth((state) => state.uid)
   const store = useStore(uid)
@@ -68,7 +36,7 @@ export default function Calendar() {
   }
 
   return (
-    <Container>
+    <Container className="calendar">
       <MonthNav>
         <MonthLink onClick={handlePrevMonth}>
           &lsaquo; {format(prevMonth, 'MMMM yyyy')}
@@ -107,3 +75,35 @@ export default function Calendar() {
     </Container>
   )
 }
+
+const Container = tw.div`flex-grow flex flex-col`
+
+const MonthNav = tw.div`flex justify-between p-2 border-b`
+
+const MonthLink = tw.button``
+
+const SelectedMonth = tw.div`text-lg font-bold`
+
+const DayHeader = tw.div`flex p-4`
+
+const DayOfWeek = tw.div`font-bold flex-1 p-2 text-sm text-center text-gray-500`
+
+const DayGrid = tw.div`flex-grow grid grid-cols-7 grid-rows-6 gap-4 p-4`
+
+const Day = styled.div({
+  ...tw`bg-gray-100 rounded p-2 relative`,
+  variants: {
+    offset: {
+      0: tw`col-start-7`,
+      1: tw`col-start-1`,
+      2: tw`col-start-2`,
+      3: tw`col-start-3`,
+      4: tw`col-start-4`,
+      5: tw`col-start-5`,
+      6: tw`col-start-6`,
+    },
+    logged: {
+      true: tw`bg-yellow-100`,
+    },
+  },
+})
